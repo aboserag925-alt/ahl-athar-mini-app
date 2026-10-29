@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>إستراحة أهل الأثر</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0f1a17;--card:#17261f;--gold:#d4af37;--gold2:#f3dc8a;--fg:#f4efe0;--hint:#a9b3aa;--ease:cubic-bezier(.22,.8,.3,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;background:#07110e;color:var(--fg);min-height:100vh;position:relative;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(90px);z-index:0;opacity:.35;animation:float 14s ease-in-out infinite;will-change:transform;pointer-events:none}
+body::before{background:#d4af37;top:-120px;right:-100px}
+body::after{background:#1f7a5a;bottom:-120px;left:-100px;animation-delay:-7s}
+@keyframes float{50%{transform:translate(30px,40px) scale(1.15)}}
+header,main,footer{position:relative;z-index:1}
+header{padding:34px 16px 14px;text-align:center;animation:rise .7s var(--ease) backwards}
+h1{margin:0 auto;display:inline-block;position:relative;overflow:hidden;padding:2px 8px;font-size:26px;letter-spacing:.3px;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 5s ease-in-out infinite;will-change:transform}
+@keyframes shine{0%{transform:translateX(-120%)}60%,100%{transform:translateX(320%)}}
+.sub{color:var(--hint);font-size:14px;margin-top:4px}
+main{padding:8px 16px 30px;max-width:640px;margin:auto}
+#screen{transition:opacity .14s ease,transform .14s ease}
+#screen.out{opacity:0;transform:translateY(6px)}
+#screen.in>*{animation:rise .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid .tile:last-child:nth-child(odd){grid-column:1/-1}
+.tile,.item{position:relative;overflow:hidden;background:rgba(255,255,255,.06);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(243,220,138,.22);border-radius:20px;color:var(--fg)}
+.tile{padding:22px 10px;font:inherit;font-size:15px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s var(--ease)}
+.tile b{display:block;font-size:30px;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(212,175,55,.5))}
+.tile:active{transform:scale(.95)}
+.tile:hover{border-color:var(--gold);box-shadow:0 0 24px rgba(212,175,55,.35)}
+.item{display:block;padding:14px;margin:10px 0;text-decoration:none}
+.item small{display:block;color:var(--hint);margin-top:4px}
+.live{border-color:var(--gold)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gold{color:var(--gold2)}
+.tap{cursor:pointer;transition:transform .15s var(--ease)}
+.tap:active{transform:scale(.98)}
+.back{background:none;border:0;color:var(--gold);font:inherit;font-size:15px;padding:12px 0;cursor:pointer;transition:transform .2s var(--ease)}
+.back:active{transform:translateX(6px)}
+input{width:100%;padding:12px;border-radius:14px;border:1px solid rgba(212,175,55,.3);background:rgba(255,255,255,.06);color:var(--fg);font:inherit;font-size:15px;margin:8px 0}
+.btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1a1a;border:0;border-radius:20px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(212,175,55,.35);position:relative;overflow:hidden}
+.btn:active{transform:scale(.95)}
+.ghost{background:none;color:var(--gold);border:1px solid var(--gold);box-shadow:none}
+.ayah{font-size:20px;line-height:2.1;text-align:justify}
+.ayah span{color:var(--gold);font-size:15px}
+.dtext{font-size:18px;line-height:2;margin:0 0 10px}
+.dcard{display:flex;flex-direction:column;gap:6px}
+.dcount{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ring{position:relative;width:68px;height:68px;border:0;background:none;padding:0;cursor:pointer;color:var(--fg);font:inherit;flex:none;transition:transform .15s var(--ease)}
+.ring:active{transform:scale(.9)}
+.ring svg{width:68px;height:68px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:5}
+.ring .bg{stroke:rgba(255,255,255,.1)}
+.ring .fg{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset .3s var(--ease)}
+.ring em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:17px;color:var(--gold2)}
+.dcard.done{border-color:#4ecb8d}
+.dcard.done .ring .fg{stroke:#4ecb8d}
+.dcard.done .ring em{color:#4ecb8d}
+.dcard.shake{animation:shake .5s ease}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.pop{animation:pop .25s var(--ease)}
+@keyframes pop{50%{transform:scale(1.25)}}
+.src{font-size:12px;color:var(--hint);line-height:1.9;text-align:center;margin-top:14px}
+.sk{height:64px;border-radius:20px;margin:10px 0;background:rgba(255,255,255,.06);position:relative;overflow:hidden}
+.sk::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(243,220,138,.14),transparent);animation:sweep 1.3s linear infinite;will-change:transform}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.ripple{position:absolute;border-radius:50%;background:rgba(243,220,138,.35);width:20px;height:20px;margin:-10px 0 0 -10px;pointer-events:none;animation:rip .6s ease-out forwards}
+@keyframes rip{from{transform:scale(1);opacity:.7}to{transform:scale(14);opacity:0}}
+.next{text-align:center;padding:20px 14px}
+.next .nm{color:var(--hint);font-size:14px}
+.next .cd{font-size:38px;font-weight:700;color:var(--gold2);letter-spacing:1px;direction:ltr;font-variant-numeric:tabular-nums;margin:6px 0}
+.hl{border-color:var(--gold)}
+.hl::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 22px rgba(212,175,55,.5);pointer-events:none;opacity:.15;animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{opacity:1}}
+.compass{position:relative;width:260px;height:260px;margin:18px auto}
+.rose{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(243,220,138,.35);background:radial-gradient(circle,rgba(255,255,255,.05),transparent 70%);transition:transform .15s linear;will-change:transform}
+.rose .n{position:absolute;top:6px;left:0;right:0;text-align:center;color:var(--gold2);font-weight:700}
+.needle{position:absolute;inset:0;will-change:transform}
+.needle::before{content:"🕋";position:absolute;top:22px;left:50%;margin-left:-14px;font-size:28px}
+.needle::after{content:"";position:absolute;top:60px;left:50%;margin-left:-2px;width:4px;height:70px;border-radius:2px;background:linear-gradient(var(--gold),transparent)}
+.compass.ok .rose{border-color:#4ecb8d;box-shadow:0 0 30px rgba(78,203,141,.5)}
+.pivot{position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px;border-radius:50%;background:var(--gold)}
+footer{text-align:center;padding:10px 20px 36px;color:var(--hint);font-size:13px;line-height:2}
+footer .dua{color:var(--gold2);font-size:14px}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>إستراحة أهل الأثر</h1>
+  <div class="sub">الدكتور خالد الحارث</div>
+</header>
+<main><div id="screen"></div></main>
+<footer>
+  <div>المنصة قيد التطوير والتجربة · تصميم فارس</div>
+  <div class="dua">اسألكم الدعاء لأبي بالرحمة والمغفرة</div>
+</footer>
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
+
+/* عدّل البيانات هنا فقط */
+const DEFAULT_CITY = { name: "القاهرة، مصر", lat: 30.0444, lon: 31.2357, cc: "eg" };
+const ADHKAR_URL = "https://raw.githubusercontent.com/rn0x/Adhkar-json/main/adhkar.json";
+const DATA = {
+  schedule: [{ day: "يوميًا", time: "7:00 مساءً بتوقيت مصر", title: "البث المباشر" }],
+  categories: [
+    { id: "muslim", name: "شرح صحيح مسلم", icon: "📖", items: [] },
+    { id: "fiqh", name: "الفقه", icon: "⚖️", items: [] },
+    { id: "quran", name: "تسجيلات القرآن", icon: "🎙️", items: [] },
+    { id: "seerah", name: "السيرة", icon: "🌙", items: [] },
+    { id: "greats", name: "أعلام الإسلام", icon: "⭐", items: [] },
+    { id: "misc", name: "منوعات", icon: "🗂️", items: [] },
+    { id: "talks", name: "مناقشات", icon: "💬", items: [] }
+  ],
+  archive: [
+    { id: "docs", name: "وثائق أهل السنة والجماعة", icon: "📜", items: [] },
+    { id: "old", name: "تسجيلات قديمة", icon: "🗄️", items: [] }
+  ],
+  links: [
+    { name: "يوتيوب", url: "https://youtube.com/" },
+    { name: "تيك توك", url: "https://tiktok.com/" },
+    { name: "قناة تيليجرام", url: "https://t.me/" }
+  ]
+};
+
+const screen = document.getElementById("screen");
+const stack = [];
+let timer = null, cleanup = null, token = 0;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = s => String(s).replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, "").replace(/[إأآٱ]/g, "ا");
+const haptic = (k, v) => { try { tg && tg.HapticFeedback && (k === "n" ? tg.HapticFeedback.notificationOccurred(v) : tg.HapticFeedback.impactOccurred(v)); } catch (e) {} };
+
+/* تخزين: localStorage أولًا ثم CloudStorage إن وُجد */
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) {
+    try { localStorage.setItem(k, v); } catch (e) {}
+    try { tg && tg.CloudStorage && tg.CloudStorage.setItem(k, v); } catch (e) {}
+  }
+};
+function getCity() {
+  try { const c = JSON.parse(store.get("city")); if (c && c.lat != null) return c; } catch (e) {}
+  return DEFAULT_CITY;
+}
+function setCity(c) { store.set("city", JSON.stringify(c)); }
+try {
+  if (tg && tg.CloudStorage && !store.get("city")) tg.CloudStorage.getItem("city", (e, v) => { if (!e && v) { try { localStorage.setItem("city", v); } catch (x) {} } });
+} catch (e) {}
+
+/* ===== واجهة عامة ===== */
+function tile(icon, label, fn) {
+  const b = document.createElement("button");
+  b.className = "tile";
+  b.innerHTML = "<b>" + icon + "</b>" + label;
+  b.onclick = fn;
+  return b;
+}
+function skel(n) { return '<div class="sk"></div>'.repeat(n || 4); }
+function show(node, canBack) {
+  const my = ++token;
+  if (timer) { clearInterval(timer); timer = null; }
+  if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; }
+  screen.classList.remove("in");
+  screen.classList.add("out");
+  setTimeout(() => {
+    if (my !== token) return;
+    screen.innerHTML = "";
+    if (canBack) {
+      const back = document.createElement("button");
+      back.className = "back";
+      back.textContent = "رجوع";
+      back.onclick = () => { stack.pop(); (stack.pop() || home)(); };
+      screen.appendChild(back);
+    }
+    screen.appendChild(node);
+    stagger();
+    screen.classList.remove("out");
+    screen.classList.add("in");
+    window.scrollTo(0, 0);
+  }, 140);
+}
+/* تحديث محتوى الشاشة الحالية دون انتقال (بعد انتهاء التحميل) */
+function fill(box, html) {
+  box.innerHTML = html;
+  stagger(box);
+  box.classList.remove("in"); void box.offsetWidth; box.classList.add("in");
+}
+function stagger(root) {
+  (root || screen).querySelectorAll(":scope > .back, :scope > .grid > *, :scope > .item, :scope > .sk, :scope > h2, :scope > div > .item, :scope > div > .sk").forEach((el, i) => el.style.setProperty("--i", Math.min(i, 14)));
+}
+function go(fn) { stack.push(fn); fn(); }
+const loading = () => { const d = document.createElement("div"); d.innerHTML = skel(5); return d; };
+
+/* تأثير موجة اللمس */
+document.addEventListener("pointerdown", e => {
+  const t = e.target.closest(".tile,.item.tap,.btn,.ring");
+  if (!t || window.matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const r = t.getBoundingClientRect(), s = document.createElement("span");
+  s.className = "ripple";
+  s.style.left = (e.clientX - r.left) + "px";
+  s.style.top = (e.clientY - r.top) + "px";
+  if (getComputedStyle(t).position === "static") t.style.position = "relative";
+  t.style.overflow = "hidden";
+  t.appendChild(s);
+  setTimeout(() => s.remove(), 650);
+});
+
+/* ===== الرئيسية ===== */
+function home() {
+  stack.length = 0;
+  const g = document.createElement("div");
+  g.className = "grid";
+  g.appendChild(tile("📅", "جدول البث", () => go(schedule)));
+  g.appendChild(tile("🕋", "مواقيت الصلاة", () => go(prayer)));
+  g.appendChild(tile("🧭", "اتجاه القبلة", () => go(qibla)));
+  g.appendChild(tile("🕌", "القرآن الكريم", () => go(quranList)));
+  g.appendChild(tile("🌅", "أذكار الصباح والمساء", () => go(() => adhkarChapter(1))));
+  g.appendChild(tile("📿", "حصن المسلم", () => go(adhkarIndex)));
+  g.appendChild(tile("🎧", "التسجيلات", () => go(recordings)));
+  g.appendChild(tile("📜", "وثائق وأرشيفات", () => go(archive)));
+  g.appendChild(tile("🔗", "قنواتنا", () => go(links)));
+  show(g, false);
+}
+function schedule() {
+  const d = document.createElement("div");
+  DATA.schedule.forEach(s => d.insertAdjacentHTML("beforeend", '<div class="item live">' + esc(s.title) + "<small>" + esc(s.day) + " · " + esc(s.time) + "</small></div>"));
+  show(d, true);
+}
+
+/* ===== مواقيت الصلاة ===== */
+const PNAMES = { Fajr: "الفجر", Sunrise: "الشروق", Dhuhr: "الظهر", Asr: "العصر", Maghrib: "المغرب", Isha: "العشاء" };
+function pad(n) { return String(n).padStart(2, "0"); }
+function timingsUrl(c) {
+  const n = new Date();
+  const ds = pad(n.getDate()) + "-" + pad(n.getMonth() + 1) + "-" + n.getFullYear();
+  return "https://api.aladhan.com/v1/timings/" + ds + "?latitude=" + c.lat + "&longitude=" + c.lon + (c.cc === "eg" ? "&method=5" : "");
+}
+async function prayer() {
+  const d = document.createElement("div");
+  d.appendChild(loading());
+  show(d, true);
+  const c = getCity();
+  try {
+    const r = await fetch(timingsUrl(c));
+    if (!r.ok) throw 0;
+    const data = (await r.json()).data;
+    const t = data.timings;
+    const hj = data.date && data.date.hijri;
+    const hd = hj ? hj.day + " " + hj.month.ar + " " + hj.year + " هـ" : "";
+    const times = Object.keys(PNAMES).map(k => {
+      const m = String(t[k]).match(/(\d{1,2}):(\d{2})/);
+      return { k, label: PNAMES[k], str: m[0], h: +m[1], mi: +m[2] };
+    });
+    const html = '<div class="item next"><div class="nm" id="nn"></div><div class="cd" id="cd">--:--:--</div>' +
+      '<div class="nm">' + esc(c.name) + (hd ? " · " + esc(hd) : "") + "</div>" +
+      '<div style="margin-top:10px"><button class="btn ghost" id="chg">تغيير المدينة</button></div></div>' +
+      '<div id="plist">' + times.map(x => '<div class="item row" data-k="' + x.k + '"><span>' + x.label + '</span><span class="gold">' + x.str + "</span></div>").join("") + "</div>";
+    waitFor(() => d.isConnected, () => {
+      fill(d, html);
+      d.querySelector("#chg").onclick = () => go(citySearch);
+      const tick = () => {
+        const now = new Date();
+        let nxt = null, diff = 0;
+        for (const x of times) {
+          const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), x.h, x.mi, 0);
+          if (dt > now) { nxt = x; diff = dt - now; break; }
+        }
+        if (!nxt) { nxt = times[0]; const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, nxt.h, nxt.mi, 0); diff = dt - now; }
+        const s = Math.floor(diff / 1000);
+        const e1 = document.getElementById("cd"), e2 = document.getElementById("nn");
+        if (!e1) return;
+        e1.textContent = pad(Math.floor(s / 3600)) + ":" + pad(Math.floor(s % 3600 / 60)) + ":" + pad(s % 60);
+        e2.textContent = "الصلاة القادمة: " + nxt.label;
+        d.querySelectorAll("#plist .item").forEach(el => el.classList.toggle("hl", el.dataset.k === nxt.k));
+      };
+      tick();
+      timer = setInterval(tick, 1000);
+    });
+  } catch (e) {
+    waitFor(() => d.isConnected, () => fill(d, '<div class="item">تعذّر تحميل المواقيت. جرّب مرة أخرى.<div style="margin-top:10px"><button class="btn" id="rt">إعادة المحاولة</button></div></div>'));
+    waitFor(() => d.querySelector("#rt"), () => { d.querySelector("#rt").onclick = () => { stack.pop(); go(prayer); }; });
+  }
+}
+/* ينتظر حتى تُركَّب الشاشة بعد الانتقال */
+function waitFor(cond, fn, n) {
+  n = n || 0;
+  if (cond()) return fn();
+  if (n < 40) setTimeout(() => waitFor(cond, fn, n + 1), 50);
+}
+function citySearch() {
+  const d = document.createElement("div");
+  d.innerHTML = '<input id="cq" placeholder="ابحث عن مدينتك"><div id="cr"></div>';
+  show(d, true);
+  waitFor(() => d.isConnected, () => {
+    const q = d.querySelector("#cq"), res = d.querySelector("#cr");
+    let tm = null;
+    q.oninput = () => {
+      clearTimeout(tm);
+      const v = q.value.trim();
+      if (v.length < 2) { res.innerHTML = ""; return; }
+      res.innerHTML = skel(2);
+      tm = setTimeout(async () => {
+        try {
+          const r = await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=6&addressdetails=1&accept-language=ar&q=" + encodeURIComponent(v));
+          const list = await r.json();
+          if (!list.length) { fill(res, '<div class="item">لا توجد نتائج. جرّب كتابة اسم آخر.</div>'); return; }
+          res.innerHTML = "";
+          list.forEach(p => {
+            const a = document.createElement("div");
+            a.className = "item tap";
+            a.textContent = p.display_name;
+            a.onclick = () => {
+              const nm = (p.name || p.display_name.split("،")[0]) + (p.address && p.address.country ? "، " + p.address.country : "");
+              setCity({ name: nm, lat: +(+p.lat).toFixed(4), lon: +(+p.lon).toFixed(4), cc: ((p.address && p.address.country_code) || "").toLowerCase() });
+              haptic("n", "success");
+              stack.pop(); stack.pop(); go(prayer);
+            };
+            res.appendChild(a);
+          });
+          stagger(res);
+        } catch (e) { fill(res, '<div class="item">تعذّر البحث الآن. جرّب مرة أخرى.</div>'); }
+      }, 600);
+    };
+    q.focus();
+  });
+}
+
+/* ===== القبلة ===== */
+function qiblaMath(lat, lon) {
+  const k = [21.4225 * Math.PI / 180, 39.8262 * Math.PI / 180], p = lat * Math.PI / 180, dl = k[1] - lon * Math.PI / 180;
+  const y = Math.sin(dl), x = Math.cos(p) * Math.tan(k[0]) - Math.sin(p) * Math.cos(dl);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+async function qibla() {
+  const c = getCity();
+  let dir = qiblaMath(c.lat, c.lon);
+  const d = document.createElement("div");
+  d.innerHTML = '<div class="item next"><div class="nm">اتجاه القبلة من ' + esc(c.name) + '</div>' +
+    '<div class="compass" id="cp"><div class="rose" id="rose"><div class="n">ش</div><div class="needle" id="nd"></div></div><div class="pivot"></div></div>' +
+    '<div class="cd" id="dg" style="font-size:30px"></div>' +
+    '<div class="nm" id="hint">اتجاه ثابت بالنسبة للشمال. فعّل البوصلة لتتحرك مع هاتفك.</div>' +
+    '<div style="margin-top:10px;display:flex;gap:8px;justify-content:center"><button class="btn" id="en">تفعيل البوصلة</button><button class="btn ghost" id="chg">تغيير المدينة</button></div></div>';
+  show(d, true);
+  waitFor(() => d.isConnected && d.querySelector("#nd"), () => {
+    const nd = d.querySelector("#nd"), rose = d.querySelector("#rose"), cp = d.querySelector("#cp"), dg = d.querySelector("#dg");
+    let heading = 0, cur = 0, live = false, wasOk = false;
+    const draw = () => {
+      nd.style.transform = "rotate(" + dir + "deg)";
+      dg.textContent = Math.round(dir) + "°";
+    };
+    draw();
+    d.querySelector("#chg").onclick = () => go(citySearch);
+    fetch("https://api.aladhan.com/v1/qibla/" + c.lat + "/" + c.lon).then(r => r.json()).then(j => {
+      if (j && j.data && typeof j.data.direction === "number") { dir = j.data.direction; draw(); }
+    }).catch(() => {});
+    const onO = e => {
+      let h = typeof e.webkitCompassHeading === "number" ? e.webkitCompassHeading : (e.alpha != null ? 360 - e.alpha : null);
+      if (h == null) return;
+      heading = h;
+      cur += ((heading - cur + 540) % 360) - 180;
+      rose.style.transform = "rotate(" + (-cur) + "deg)";
+      const diff = Math.abs(((dir - heading + 540) % 360) - 180);
+      const ok = diff < 4;
+      cp.classList.toggle("ok", ok);
+      if (ok && !wasOk) haptic("n", "success");
+      wasOk = ok;
+    };
+    const start = () => {
+      window.addEventListener("deviceorientationabsolute", onO, true);
+      window.addEventListener("deviceorientation", onO, true);
+      live = true;
+      d.querySelector("#hint").textContent = "أدر هاتفك حتى تتوهج البوصلة بالأخضر.";
+      d.querySelector("#en").style.display = "none";
+    };
+    cleanup = () => { window.removeEventListener("deviceorientationabsolute", onO, true); window.removeEventListener("deviceorientation", onO, true); };
+    d.querySelector("#en").onclick = async () => {
+      try {
+        if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function") {
+          const p = await DeviceOrientationEvent.requestPermission();
+          if (p !== "granted") { d.querySelector("#hint").textContent = "لم يُسمح باستخدام البوصلة. الاتجاه الثابت أعلاه يبقى صحيحًا."; return; }
+        }
+        if (!window.DeviceOrientationEvent) throw 0;
+        start();
+      } catch (e) { d.querySelector("#hint").textContent = "البوصلة غير متاحة في هذا الجهاز. استخدم الدرجة المكتوبة أعلاه."; }
+    };
+  });
+}
+
+/* ===== القرآن ===== */
+async function quranList() {
+  const d = document.createElement("div");
+  d.appendChild(loading());
+  show(d, true);
+  try {
+    const r = await fetch("https://api.alquran.cloud/v1/surah");
+    const list = (await r.json()).data;
+    waitFor(() => d.isConnected, () => {
+      d.innerHTML = "";
+      const q = document.createElement("input");
+      q.placeholder = "ابحث عن سورة";
+      const box = document.createElement("div");
+      const draw = f => {
+        box.innerHTML = "";
+        list.filter(s => s.name.includes(f)).forEach(s => {
+          const a = document.createElement("div");
+          a.className = "item row tap";
+          a.innerHTML = "<span>" + s.number + ". " + esc(s.name) + '</span><small>' + s.numberOfAyahs + " آية</small>";
+          a.onclick = () => go(() => surah(s));
+          box.appendChild(a);
+        });
+        box.querySelectorAll(".item").forEach((el, i) => { if (i < 12) el.style.setProperty("--i", i); });
+        box.classList.remove("in"); void box.offsetWidth; box.classList.add("in");
+      };
+      q.oninput = () => draw(q.value.trim());
+      d.appendChild(q); d.appendChild(box); draw("");
+    });
+  } catch (e) {
+    waitFor(() => d.isConnected, () => fill(d, '<div class="item">تعذّر تحميل المصحف. جرّب مرة أخرى.</div>'));
+  }
+}
+async function surah(s) {
+  const d = document.createElement("div");
+  d.appendChild(loading());
+  show(d, true);
+  try {
+    const r = await fetch("https://api.alquran.cloud/v1/surah/" + s.number + "/quran-uthmani");
+    const ay = (await r.json()).data.ayahs;
+    waitFor(() => d.isConnected, () => fill(d, '<h2 class="gold" style="text-align:center">' + esc(s.name) + '</h2><div class="ayah">' +
+      ay.map(a => esc(a.text) + ' <span>﴿' + a.numberInSurah + "﴾</span>").join(" ") + "</div>"));
+  } catch (e) {
+    waitFor(() => d.isConnected, () => fill(d, '<div class="item">تعذّر تحميل السورة. جرّب مرة أخرى.</div>'));
+  }
+}
+
+/* ===== الأذكار: حصن المسلم من المصدر المفتوح، دون أي تعديل على النصوص ===== */
+let ADHKAR = null;
+async function loadAdhkar() {
+  if (ADHKAR) return ADHKAR;
+  try { const c = JSON.parse(store.get("adhkar_v1")); if (Array.isArray(c) && c.length) { ADHKAR = c; return c; } } catch (e) {}
+  const r = await fetch(ADHKAR_URL);
+  if (!r.ok) throw 0;
+  const j = await r.json();
+  ADHKAR = j;
+  store.set("adhkar_v1", JSON.stringify(j));
+  return j;
+}
+const SRC = '<div class="src">المصدر: كتاب حصن المسلم للشيخ سعيد بن علي بن وهف القحطاني<br>عبر المشروع المفتوح Adhkar-json (رخصة MIT)</div>';
+async function adhkarIndex() {
+  const d = document.createElement("div");
+  d.appendChild(loading());
+  show(d, true);
+  try {
+    const all = await loadAdhkar();
+    waitFor(() => d.isConnected, () => {
+      d.innerHTML = '<h2 class="gold" style="text-align:center">حصن المسلم</h2>';
+      const q = document.createElement("input");
+      q.placeholder = "ابحث في الأبواب أو في نصوص الأذكار";
+      const box = document.createElement("div");
+      const draw = f => {
+        box.innerHTML = "";
+        let n = 0;
+        all.forEach(ch => {
+          const nf = norm(f);
+          const hit = !f || norm(ch.category).includes(nf) || ch.array.some(z => norm(z.text).includes(nf));
+          if (!hit) return;
+          const a = document.createElement("div");
+          a.className = "item row tap";
+          if (n < 12) a.style.setProperty("--i", n);
+          n++;
+          a.innerHTML = "<span>" + esc(ch.category) + "</span><small>" + ch.array.length + "</small>";
+          a.onclick = () => go(() => adhkarChapter(ch.id));
+          box.appendChild(a);
+        });
+        if (!n) box.innerHTML = '<div class="item">لا توجد نتائج مطابقة.</div>';
+        box.classList.remove("in"); void box.offsetWidth; box.classList.add("in");
+      };
+      q.oninput = () => draw(q.value.trim());
+      d.appendChild(q); d.appendChild(box); d.insertAdjacentHTML("beforeend", SRC); draw("");
+    });
+  } catch (e) {
+    waitFor(() => d.isConnected, () => fill(d, '<div class="item">تعذّر تحميل الأذكار. تأكد من الاتصال وجرّب مرة أخرى.</div>'));
+  }
+}
+const CIRC = 2 * Math.PI * 28;
+async function adhkarChapter(id) {
+  const d = document.createElement("div");
+  d.appendChild(loading());
+  show(d, true);
+  try {
+    const all = await loadAdhkar();
+    const ch = all.find(c => c.id === id) || all[0];
+    waitFor(() => d.isConnected, () => {
+      d.innerHTML = '<h2 class="gold" style="text-align:center">' + esc(ch.category) + "</h2>";
+      ch.array.forEach((z, i) => {
+        const total = Math.max(1, +z.count || 1);
+        let left = total;
+        const c = document.createElement("div");
+        c.className = "item dcard";
+        c.style.setProperty("--i", Math.min(i + 1, 14));
+        c.innerHTML = '<div class="dtext">' + esc(z.text) + "</div>" +
+          '<div class="dcount"><span class="gold">' + (total > 1 ? "التكرار: " + total : "مرة واحدة") + "</span>" +
+          '<button class="ring" aria-label="عدّاد"><svg viewBox="0 0 68 68"><circle class="bg" cx="34" cy="34" r="28"/><circle class="fg" cx="34" cy="34" r="28" stroke-dasharray="' + CIRC.toFixed(1) + '" stroke-dashoffset="' + CIRC.toFixed(1) + '"/></svg><em>' + total + "</em></button></div>";
+        const ring = c.querySelector(".ring"), fg = c.querySelector(".fg"), em = c.querySelector("em");
+        ring.onclick = () => {
+          if (left <= 0) return;
+          left--;
+          fg.style.strokeDashoffset = (CIRC * left / total).toFixed(1);
+          em.textContent = left ? left : "✓";
+          em.classList.remove("pop"); void em.offsetWidth; em.classList.add("pop");
+          if (left === 0) {
+            c.classList.add("done", "shake");
+            setTimeout(() => c.classList.remove("shake"), 520);
+            haptic("n", "success");
+          } else haptic("i", "light");
+        };
+        d.appendChild(c);
+      });
+      d.insertAdjacentHTML("beforeend", SRC);
+      d.classList.add("in");
+    });
+  } catch (e) {
+    waitFor(() => d.isConnected, () => fill(d, '<div class="item">تعذّر تحميل الأذكار. تأكد من الاتصال وجرّب مرة أخرى.</div>'));
+  }
+}
+
+/* ===== التسجيلات والأرشيف والروابط (البيانات في DATA) ===== */
+function listOf(groups, withSearch) {
+  const d = document.createElement("div");
+  if (withSearch) {
+    const q = document.createElement("input");
+    q.placeholder = "ابحث في التسجيلات";
+    const res = document.createElement("div");
+    q.oninput = () => {
+      res.innerHTML = "";
+      const t = q.value.trim();
+      if (!t) return;
+      DATA.categories.concat(DATA.archive).forEach(c => c.items.forEach(i => {
+        if (i.title.includes(t)) res.insertAdjacentHTML("beforeend", '<a class="item" href="' + esc(i.url) + '">' + esc(i.title) + "<small>" + esc(c.name) + "</small></a>");
+      }));
+    };
+    d.appendChild(q); d.appendChild(res);
+  }
+  const g = document.createElement("div");
+  g.className = "grid";
+  groups.forEach(c => g.appendChild(tile(c.icon, c.name, () => go(() => category(c)))));
+  d.appendChild(g);
+  return d;
+}
+function recordings() { show(listOf(DATA.categories, true), true); }
+function archive() { show(listOf(DATA.archive, false), true); }
+function category(c) {
+  const d = document.createElement("div");
+  if (!c.items.length) d.innerHTML = '<div class="item">لا توجد ملفات هنا بعد<small>تُضاف تلقائيًا من البوت</small></div>';
+  c.items.forEach(i => d.insertAdjacentHTML("beforeend", '<a class="item" href="' + esc(i.url) + '">' + esc(i.title) + "</a>"));
+  show(d, true);
+}
+function links() {
+  const d = document.createElement("div");
+  DATA.links.forEach(l => d.insertAdjacentHTML("beforeend", '<a class="item" href="' + esc(l.url) + '">' + esc(l.name) + "</a>"));
+  show(d, true);
+}
+home();
+</script>
+</body>
+</html>
